@@ -1,9 +1,6 @@
 package pl.koczorowicz.empik.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -37,6 +34,9 @@ public class Coupon {
     @NotNull
     @Column
     private List<String> countries;
+
+    @Version
+    private Integer version;
 
     public Coupon() {
     }
@@ -87,6 +87,14 @@ public class Coupon {
 
     public void setCountries(List<String> countries) {
         this.countries = countries;
+    }
+
+    public Integer getVersion() {
+        return version;
+    }
+
+    public void setVersion(Integer version) {
+        this.version = version;
     }
 
     @Override

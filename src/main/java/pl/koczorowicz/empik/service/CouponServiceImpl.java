@@ -1,5 +1,6 @@
 package pl.koczorowicz.empik.service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.koczorowicz.empik.model.Coupon;
