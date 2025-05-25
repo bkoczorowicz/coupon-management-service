@@ -1,6 +1,7 @@
 package pl.koczorowicz.empik.service;
 
 import org.springframework.stereotype.Service;
+import pl.koczorowicz.empik.exception.CouponAlreadyUsedException;
 import pl.koczorowicz.empik.model.Coupon;
 
 import java.util.UUID;
@@ -13,5 +14,5 @@ public interface CouponService {
 
     void deleteCoupon(String code);
 
-    Coupon useCoupon(String code);
+    Coupon useCoupon(String code) throws CouponAlreadyUsedException;
 }

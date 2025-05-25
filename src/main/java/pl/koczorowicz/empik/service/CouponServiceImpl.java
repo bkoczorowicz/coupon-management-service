@@ -1,8 +1,8 @@
 package pl.koczorowicz.empik.service;
 
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import pl.koczorowicz.empik.exception.CouponAlreadyUsedException;
 import pl.koczorowicz.empik.model.Coupon;
 import pl.koczorowicz.empik.repository.CouponRepository;
 
@@ -28,10 +28,10 @@ public class CouponServiceImpl implements CouponService {
         couponRepository.delete(coupon);
     }
 
-    public Coupon useCoupon(String code) {
+    public Coupon useCoupon(String code) throws CouponAlreadyUsedException {
         Coupon coupon = couponRepository.findByCodeIgnoreCase(code).orElseThrow();
         if (coupon.getRemainingUses() <= 0) {
-            throw new IllegalStateException("Coupon has no remaining uses");
+            throw new CouponAlreadyUsedException("Coupon \"" + code + "\" has no remaining uses");
         }
         coupon.setRemainingUses(coupon.getRemainingUses() - 1);
         return couponRepository.save(coupon);
