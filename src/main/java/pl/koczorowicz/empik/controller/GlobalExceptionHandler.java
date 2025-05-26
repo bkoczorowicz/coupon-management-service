@@ -1,5 +1,6 @@
 package pl.koczorowicz.empik.controller;
 
+import org.apache.http.HttpException;
 import org.hibernate.dialect.lock.OptimisticEntityLockException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,6 +68,13 @@ public class GlobalExceptionHandler {
         logger.error("Requested coupon not found: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of(
                 "message", "Requested resource not found: " + ex.getMessage()));
+    }
+
+    @ExceptionHandler(HttpException.class)
+    public ResponseEntity<?> handleHttpException(HttpException ex) {
+        logger.error("HTTP exception occurred: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
+                "message", "HTTP error occurred: " + ex.getMessage()));
     }
 
     /**

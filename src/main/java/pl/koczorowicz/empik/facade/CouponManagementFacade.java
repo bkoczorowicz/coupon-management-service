@@ -1,6 +1,8 @@
 package pl.koczorowicz.empik.facade;
 
 import org.apache.http.HttpException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import pl.koczorowicz.empik.exception.CouponAlreadyUsedException;
@@ -14,6 +16,8 @@ import java.util.List;
 @Component
 public class CouponManagementFacade {
 
+    Logger logger = LoggerFactory.getLogger(CouponManagementFacade.class);
+
     private CouponService couponService;
     private GeolocationService geolocationService;
 
@@ -23,17 +27,17 @@ public class CouponManagementFacade {
     }
 
     public Coupon createNewCoupon(Coupon coupon) {
-        System.out.println("Creating new coupon: " + coupon);
+        logger.info("Creating new coupon: {}", coupon);
         return couponService.createOrUpdateCoupon(coupon);
     }
 
     public void deleteCoupon(String code) {
-        System.out.println("Deleting coupon with code: " + code);
+        logger.info("Deleting coupon with code: {}", code);
         couponService.deleteCoupon(code);
     }
 
     public Coupon redeemCoupon(String code, String ipAddress) throws HttpException, CouponNotValidForCountryException, CouponAlreadyUsedException {
-        System.out.println("Redeeming coupon with code: " + code);
+        logger.info("Redeeming coupon with code: {}", code);
         Coupon coupon = couponService.getCouponByCode(code);
         List<String> elligibleCountries = coupon.getCountries();
         String userCountry = geolocationService.getCountryByIp(ipAddress);
@@ -44,7 +48,7 @@ public class CouponManagementFacade {
     }
 
     public Coupon getCouponByCode(String code) {
-        System.out.println("Retrieving coupon with code: " + code);
+        logger.info("Retrieving coupon with code: {}", code);
         return couponService.getCouponByCode(code);
     }
 }
