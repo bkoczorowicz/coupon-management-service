@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import pl.koczorowicz.empik.exception.CouponAlreadyUsedException;
 import pl.koczorowicz.empik.exception.CouponNotValidForCountryException;
+import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -75,6 +76,14 @@ public class GlobalExceptionHandler {
         logger.error("HTTP exception occurred: {}", ex.getMessage());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of(
                 "message", "HTTP error occurred: " + ex.getMessage()));
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<?> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
+        logger.error("Data integrity violation: {}", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "message", "Coupon with the given name already exists",
+                "details", ex.getMessage()));
     }
 
     /**

@@ -28,12 +28,15 @@ public class CustomerController {
     private IpAddressDeterminer ipAddressDeterminer;
 
     /**
+     * This endpoint is used to redeem a coupon by its code.
+     * It checks the validity of the coupon and returns the remaining uses.
      *
-     * This endpoint should be used to redeem a coupon, which boils down to
-     * checking if the coupon is valid and has remaining uses.
-     * If the coupon is valid, it will be redeemed and the remaining uses will be decremented.
-     *
-     * @return
+     * @param code The code of the coupon to be redeemed.
+     * @param request The HTTP request containing client IP address.
+     * @return A response entity with a success message and remaining uses of the coupon.
+     * @throws HttpException If there is an error in processing the request.
+     * @throws CouponNotValidForCountryException If the coupon is not valid for the country of the user.
+     * @throws CouponAlreadyUsedException If the coupon has already been used.
      */
     @PostMapping("/coupon/{code}/remaining-uses")
     public ResponseEntity<?> redeemCoupon(@PathVariable String code, HttpServletRequest request) throws HttpException, CouponNotValidForCountryException, CouponAlreadyUsedException {

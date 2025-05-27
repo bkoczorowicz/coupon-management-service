@@ -17,7 +17,7 @@ public class GeolocationServiceImpl implements GeolocationService {
     private String ipApiBaseUrl;
     private RestTemplate restTemplate;
 
-    public GeolocationServiceImpl(@Autowired RestTemplate restTemplate, @Value("${ip.api.base.url}") String ipApiBaseUrl) {
+    public GeolocationServiceImpl(@Autowired RestTemplate restTemplate, @Value("${ip.api.url}") String ipApiBaseUrl) {
         this.restTemplate = restTemplate;
         this.ipApiBaseUrl = ipApiBaseUrl;
     }
