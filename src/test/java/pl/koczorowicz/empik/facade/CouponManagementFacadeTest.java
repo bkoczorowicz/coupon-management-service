@@ -45,15 +45,16 @@ public class CouponManagementFacadeTest {
         // Given
         String code = "TESTCOUPON";
         String ipAddress = "1.2.3.4";
+        String userName = "testUser";
         Coupon expectedCoupon = new Coupon();
         expectedCoupon.setCountries(List.of("PL", "US"));
 
         when(couponService.getCouponByCode("TESTCOUPON")).thenReturn(expectedCoupon);
         when(geolocationService.getCountryByIp(ipAddress)).thenReturn("PL");
-        when(couponService.useCoupon(code)).thenReturn(expectedCoupon);
+        when(couponService.useCoupon(code, userName)).thenReturn(expectedCoupon);
 
         // When
-        Coupon redeemedCoupon = testedObject.redeemCoupon(code, ipAddress);
+        Coupon redeemedCoupon = testedObject.redeemCoupon(code, ipAddress, userName);
 
         // Then
         assertNotNull(redeemedCoupon);
@@ -64,16 +65,17 @@ public class CouponManagementFacadeTest {
         // Given
         String code = "TESTCOUPON";
         String ipAddress = "1.2.3.4";
+        String userName = "testUser";
         Coupon expectedCoupon = new Coupon();
         expectedCoupon.setCountries(List.of("PL", "US"));
 
         when(couponService.getCouponByCode("TESTCOUPON")).thenReturn(expectedCoupon);
         when(geolocationService.getCountryByIp(ipAddress)).thenReturn("DE");
-        when(couponService.useCoupon(code)).thenReturn(expectedCoupon);
+        when(couponService.useCoupon(code, userName)).thenReturn(expectedCoupon);
 
         // When
         Exception exception = assertThrows(CouponNotValidForCountryException.class,
-                () -> testedObject.redeemCoupon(code, ipAddress));
+                () -> testedObject.redeemCoupon(code, ipAddress, userName));
 
         // Then
         String expectedMessage = "Coupon \"" + code +  "\" is not valid in your country";

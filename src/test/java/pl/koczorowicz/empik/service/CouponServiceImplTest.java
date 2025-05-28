@@ -12,6 +12,8 @@ import pl.koczorowicz.empik.exception.CouponAlreadyUsedException;
 import pl.koczorowicz.empik.model.Coupon;
 import pl.koczorowicz.empik.repository.CouponRepository;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -38,15 +40,17 @@ public class CouponServiceImplTest {
     public void shouldProperlyUseCoupon() throws CouponAlreadyUsedException {
         // Given
         String code = "TESTCOUPON";
+        String userName = "testUser";
         Coupon coupon = new Coupon();
         coupon.setCode(code);
         coupon.setRemainingUses(5);
+        coupon.setUsedAlreadyBy(new ArrayList<>());
 
         when(couponRepository.findByCodeIgnoreCase(code)).thenReturn(Optional.of(coupon));
         when(couponRepository.save(coupon)).thenReturn(coupon);
 
         // When
-        Coupon usedCoupon = testedObject.useCoupon(code);
+        Coupon usedCoupon = testedObject.useCoupon(code, userName);
 
         // Then
         assertEquals(4, usedCoupon.getRemainingUses());
@@ -56,25 +60,62 @@ public class CouponServiceImplTest {
     public void shouldThrowExceptionWhenCouponHasNoRemainingUses() {
         // Given
         String code = "TESTCOUPON";
+        String userName = "testUser";
         Coupon coupon = new Coupon();
         coupon.setCode(code);
         coupon.setRemainingUses(0);
+        coupon.setUsedAlreadyBy(new ArrayList<>());
 
         when(couponRepository.findByCodeIgnoreCase(code)).thenReturn(Optional.of(coupon));
 
-        // When & Then
-        assertThrows(CouponAlreadyUsedException.class, () -> testedObject.useCoupon(code));
+        // When
+        Exception exception = assertThrows(CouponAlreadyUsedException.class, () -> testedObject.useCoupon(code, userName));
+
+        // Then
+        String expectedMessage = "Coupon \"" + code + "\" has no remaining uses";
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
     }
 
     @Test
     public void shouldThrowExceptionWhenCouponNotFound() {
         // Given
         String code = "NONEXISTENTCOUPON";
+        String userName = "testUser";
+
 
         when(couponRepository.findByCodeIgnoreCase(code)).thenReturn(Optional.empty());
 
-        // When & Then
-        assertThrows(NoSuchElementException.class, () -> testedObject.useCoupon(code));
+        // When
+        Exception exception = assertThrows(NoSuchElementException.class, () -> testedObject.useCoupon(code, userName));
+
     }
+
+    @Test
+    public void shouldThrowExceptionWhenUserHasAlreadyUsedCouponOnce() {
+        // Given
+        String code = "TESTCOUPON";
+        String userName = "testUser";
+        Coupon coupon = new Coupon();
+        coupon.setCode(code);
+        coupon.setRemainingUses(5);
+        coupon.setUsedAlreadyBy(Arrays.asList(userName));
+
+        when(couponRepository.findByCodeIgnoreCase(code)).thenReturn(Optional.of(coupon));
+        when(couponRepository.save(coupon)).thenReturn(coupon);
+
+        // When
+        Exception exception = assertThrows(CouponAlreadyUsedException.class, () -> testedObject.useCoupon(code, userName));
+
+        // Then
+        String expectedMessage = "Coupon \"" + code + "\" has already been used by user: " + userName;
+        String actualMessage = exception.getMessage();
+
+        assertTrue(actualMessage.contains(expectedMessage));
+
+    }
+
 
 }
