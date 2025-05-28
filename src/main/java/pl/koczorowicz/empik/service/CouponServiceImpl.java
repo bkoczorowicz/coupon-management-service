@@ -28,8 +28,11 @@ public class CouponServiceImpl implements CouponService {
         couponRepository.delete(coupon);
     }
 
-    public Coupon useCoupon(String code) throws CouponAlreadyUsedException {
+    public Coupon useCoupon(String code, String userName) throws CouponAlreadyUsedException {
         Coupon coupon = couponRepository.findByCodeIgnoreCase(code).orElseThrow();
+        if (coupon.getUsedAlreadyBy().contains(userName)) {
+            throw new CouponAlreadyUsedException("Coupon \"" + code + "\" has already been used by user: " + userName);
+        }
         if (coupon.getRemainingUses() <= 0) {
             throw new CouponAlreadyUsedException("Coupon \"" + code + "\" has no remaining uses");
         }

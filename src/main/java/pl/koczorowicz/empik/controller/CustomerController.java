@@ -39,10 +39,10 @@ public class CustomerController {
      * @throws CouponAlreadyUsedException If the coupon has already been used.
      */
     @PostMapping("/coupon/{code}/remaining-uses")
-    public ResponseEntity<?> redeemCoupon(@PathVariable String code, HttpServletRequest request) throws HttpException, CouponNotValidForCountryException, CouponAlreadyUsedException {
+    public ResponseEntity<?> redeemCoupon(@PathVariable String code, @RequestParam String userName, HttpServletRequest request) throws HttpException, CouponNotValidForCountryException, CouponAlreadyUsedException {
         logger.info("Redeeming coupon with code: {}", code);
         String ipAddress = ipAddressDeterminer.determineClientIpAddress(request);
-        CouponResponseDto coupon = CouponResponseDto.fromCoupon(couponManagementFacade.redeemCoupon(code, ipAddress));
+        CouponResponseDto coupon = CouponResponseDto.fromCoupon(couponManagementFacade.redeemCoupon(code, ipAddress, userName));
         logger.info("Coupon redeemed successfully: {}", coupon);
         return ResponseEntity.ok(Map.of("message", "Coupon " + coupon.getCode() + " redeemed successfully. " +
                 "Remaining uses: " + coupon.getRemainingUses()));

@@ -14,5 +14,5 @@ public interface CouponService {
 
     void deleteCoupon(String code);
 
-    Coupon useCoupon(String code) throws CouponAlreadyUsedException;
+    Coupon useCoupon(String code, String userName) throws CouponAlreadyUsedException;
 }

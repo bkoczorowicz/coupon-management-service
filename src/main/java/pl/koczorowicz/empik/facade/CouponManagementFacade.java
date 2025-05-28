@@ -11,6 +11,7 @@ import pl.koczorowicz.empik.model.Coupon;
 import pl.koczorowicz.empik.service.CouponService;
 import pl.koczorowicz.empik.service.GeolocationService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -28,6 +29,7 @@ public class CouponManagementFacade {
 
     public Coupon createNewCoupon(Coupon coupon) {
         logger.info("Creating new coupon: {}", coupon);
+        coupon.setUsedAlreadyBy(new ArrayList<>());
         return couponService.createOrUpdateCoupon(coupon);
     }
 
@@ -36,7 +38,7 @@ public class CouponManagementFacade {
         couponService.deleteCoupon(code);
     }
 
-    public Coupon redeemCoupon(String code, String ipAddress) throws HttpException, CouponNotValidForCountryException, CouponAlreadyUsedException {
+    public Coupon redeemCoupon(String code, String ipAddress, String userName) throws HttpException, CouponNotValidForCountryException, CouponAlreadyUsedException {
         logger.info("Redeeming coupon with code: {}", code);
         Coupon coupon = couponService.getCouponByCode(code);
         List<String> elligibleCountries = coupon.getCountries();
@@ -44,7 +46,7 @@ public class CouponManagementFacade {
         if (!elligibleCountries.contains(userCountry)) {
             throw new CouponNotValidForCountryException("Coupon \"" + code +  "\" is not valid in your country");
         }
-        return couponService.useCoupon(code);
+        return couponService.useCoupon(code, userName);
     }
 
     public Coupon getCouponByCode(String code) {

@@ -35,6 +35,10 @@ public class Coupon {
     @Column
     private List<String> countries;
 
+    @NotNull
+    @Column
+    private List<String> usedAlreadyBy;
+
     @Version
     private Integer version;
 
@@ -87,6 +91,14 @@ public class Coupon {
 
     public void setCountries(List<String> countries) {
         this.countries = countries;
+    }
+
+    public List<String> getUsedAlreadyBy() {
+        return usedAlreadyBy;
+    }
+
+    public void setUsedAlreadyBy(List<String> usedAlreadyBy) {
+        this.usedAlreadyBy = usedAlreadyBy;
     }
 
     public Integer getVersion() {
