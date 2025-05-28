@@ -37,6 +37,7 @@ public class CouponServiceImpl implements CouponService {
             throw new CouponAlreadyUsedException("Coupon \"" + code + "\" has no remaining uses");
         }
         coupon.setRemainingUses(coupon.getRemainingUses() - 1);
+        coupon.getUsedAlreadyBy().add(userName);
         return couponRepository.save(coupon);
     }
 
